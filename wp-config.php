@@ -19,13 +19,13 @@
 define('DB_NAME', 'rot_cube');
 
 /** MySQL database username */
-define('DB_USER', 'root');
+define('DB_USER', 'admin');
 
 /** MySQL database password */
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', 'cambium#1');
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'www.rothschild-kube.com.tigris.nethost.co.il');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
