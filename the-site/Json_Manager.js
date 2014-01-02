@@ -1,6 +1,6 @@
 ﻿
 
-function JsonMan() {
+function JsonManager() {
 
     this.domain = "http://localhost/rot-cube/?json=";
 
@@ -42,7 +42,14 @@ function JsonMan() {
         this.sendAjax(to_url, func);
 
     }
-} //JsonMan()
+
+    this.get_group = function (id, func) {
+        var to_url = this.domain + "get_post&post_id=" + id + "&post_type=group";
+
+        this.sendAjax(to_url, func);
+
+    }
+} //JsonManager()
 
 
 function JsonHandler() {
@@ -52,15 +59,17 @@ function JsonHandler() {
     self.missionCounter = 0;
     self.questionCounter = 0;
     self.question;
+    var nextMission = 0;
+    var missionsPostId = [];
 
     this.get_activity_day_handler = function (missionsStr) {
-        var missionsPostId = [];
+
         var tempArr = missionsStr.post.custom_fields.missions[0].split('"')
         for (i = 1; i < tempArr.length; i += 2) {
             missionsPostId.push(tempArr[i]);
-            jsonManager.get_mission(tempArr[i], jsonHandler.get_mission_handler);
         }
         console.log(missionsPostId);
+        jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
 
     }
 
@@ -80,7 +89,7 @@ function JsonHandler() {
 
         switch (mission.post.type) {
             case "take-photo-mission":
-                missions[missionId].numOfPhotosRequired = 5; //change+++++++++++++++++++++++++++++++++++
+                missions[missionId].numOfPhotosRequired = mission.post.custom_fields["wpcf-numofphotosrequired"][0];
                 break;
 
             case "navigation-mission":
@@ -117,11 +126,11 @@ function JsonHandler() {
                 }
 
                 missions[missionId].quiz = questions;
-
+              
                 break;
 
             case "write-text":
-
+                //currently there is nothing to add here
                 break;
 
             case "read-text":
@@ -129,7 +138,7 @@ function JsonHandler() {
                 break;
 
             case "watch-video":
-
+                //צריך להחליט אם לוקחים לינק או סרטון
                 break;
 
             case "capture-video":
@@ -137,7 +146,14 @@ function JsonHandler() {
                 break;
         }
 
-        console.log(missions);
+        //ajax call next mission
+        if (missionsPostId[++nextMission] !== undefined) {
+            jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
+        }
+        else
+        { console.log(missions); }
+
+
     }
 
     this.get_question_handler = function (question) {
@@ -150,23 +166,34 @@ function JsonHandler() {
         questions[self.questionCounter][5] = parseInt(question.post.custom_fields["wpcf-right-answer"][0]);
         self.questionCounter++;
     }
+
+    this.get_group_handler = function (group) {
+        console.log(group);
+        //questions[self.questionCounter] = [];
+        //questions[self.questionCounter][0] = question.post.custom_fields["wpcf-question"][0];
+
+        //self.questionCounter++;
+    }
 } //JsonHandler()
 
-var jsonManager = new JsonMan();
+var jsonManager = new JsonManager();
 
 var jsonHandler = new JsonHandler();
 
 var missions = {};
 var questions = [];
 jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
+jsonManager.get_group(119, jsonHandler.get_group_handler);
 
-//איך לדאוג שיעבור לפי הסדר?
-//get activity day
-//get missions
-//get active activity day
 
 //להזיז את ימי פעילות למעלה
-//להעלים את השדות הקבועים
+
 //לשקול להוציא את HELPTEXT מהמערך
 //לבדוק הקרנת סרטון לפי לינק מיוטיוב
 //מה נעשה עם העלאת סרטון? 3MB זה גדול מדי
+//מה נעשה אם משימה נכשלה?
+//להפוך לPHP
+//לשנות את הסוג משימה ללא בחירה
+//להוסיף צ'ק בוקס לבונוס בכללי
+//להוסיף צבע למשימת צילום
+//לעשות בדיקה לוידאו מיו טיוב
