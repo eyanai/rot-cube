@@ -1,4 +1,6 @@
 ﻿var allUsers={};
+var gday={};
+var allgrup={};
 
 
 function JsonManager() {
@@ -24,6 +26,12 @@ function JsonManager() {
     }
 
 
+	this.getAlldays=function(func){
+		var to_url=this.domain + "?json=get_recent_posts&post_type=activity-day";
+		this.sendAjax(to_url,func);
+	}
+
+
     this.get_activity_day = function (id, func) {
         var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=activity-day";
         //&custom_fields=" + this.custom_fields_recipes;
@@ -44,13 +52,22 @@ function JsonManager() {
 
     }
 	
-	
+	//get users
 	this.getUsers=function(func){
 		var to_url=this.domain + "api/cube/get_users/";
 		this.sendAjax(to_url,func);
 		
-	}//get users
-	
+	}
+	this.getUsersById=function(id,func){
+		var to_url=this.domain + "api/cube/get_users_byid/?id="+id;
+		this.sendAjax(to_url,func);
+		
+	}
+	this.getAllGroup=function(func){
+		var to_url=this.domain + "?json=get_recent_posts&post_type=group";
+		this.sendAjax(to_url,func);
+	}
+		
  //JsonMan()
 
     this.get_group = function (id, func) {
@@ -63,9 +80,9 @@ function JsonManager() {
 
 
 function JsonHandler() {
-
+	
     var self = this;
-    self.saver;
+    self.saver,self.allDays,self.allGroup;
     self.missionCounter = 0;
     self.questionCounter = 0;
     self.question;
@@ -187,25 +204,52 @@ function JsonHandler() {
 	
 	this.setAllUsers=function(users){
 		allcount=users.user.length;
-	
-	//	  missions[missionId] = {};
-     //   missions[missionId].id = missionId;
-      //  missions[missionId].type = mission.post.custom_fields["wpcf-type"][0];
-      
-	//	 var allUsers = {id:'',name:'',picture:'',};
-		// allUsers[0].name=user.posts[0].title;
-		// allUsers[0].picture=user.posts[0].title;
-		// allUsers[0].phone=user.posts[0].title;
-		for(var i=0;i<allcount;i++){
+		/*for(var i=0;i<allcount;i++){
 			allUsers['member'+i]={};
 			allUsers['member'+i].id='user'+i;
 			allUsers['member'+i].name=users.user[i].name;
 			allUsers['member'+i].phone=users.user[i].phone;
 			allUsers['member'+i].picture=users.user[i].img;
-		}
+		}*/
 		
-//		console.log(users);
+		for (x in users.user)
+			  {
+				allUsers['member'+x]={};  
+				allUsers['member'+x].id='user'+x;
+				allUsers['member'+x].name=users.user[x].name;
+				allUsers['member'+x].phone=users.user[x].phone;
+				allUsers['member'+x].picture=users.user[x].img;
+			 // console.log(users.user[x].name);
+			  }
+		
 		console.log(allUsers);
+		
+	}
+	
+	this.returnDays=function(days){
+		allcount=days.count;
+		for(var i=0;i<allcount;i++){
+			gday['day'+i]={};
+			gday['day'+i].id=days.posts[i].id;
+			gday['day'+i].title=days.posts[i].title;
+		}
+			gday.long=allcount;
+		self.allDays=gday;
+	//	console.log(days);
+	}
+	
+	
+	this.returnGroup=function(group){
+		//allgrup
+		allcount=group.count;
+		for(var i=0;i<allcount;i++){
+			allgrup[i]={};
+			allgrup[i].id=group.posts[i].id;
+			allgrup[i].title=group.posts[i].title;
+		}
+			allgrup.long=allcount;
+		self.allGroup=allgrup;
+	//console.log(self.allGroup);
 		
 	}
 } //JsonHandler()
@@ -216,10 +260,11 @@ var jsonHandler = new JsonHandler();
 
 var missions = {};
 var questions = [];
-jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
-jsonManager.get_group(119, jsonHandler.get_group_handler);
+//jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
+//jsonManager.get_group(119, jsonHandler.get_group_handler);
 
-jsonManager.getUsers(jsonHandler.setAllUsers);
+//jsonManager.getAlldays(jsonHandler.returnDays);
+//jsonManager.getUsers(jsonHandler.setAllUsers);
 //איך לדאוג שיעבור לפי הסדר?
 //get activity day
 //get missions

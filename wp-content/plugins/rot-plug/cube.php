@@ -7,6 +7,8 @@ class JSON_API_Cube_Controller{
 	
 	//get all users
 	public function get_users(){
+	
+		
 		$user=array();
 		 $args = array(
 					'posts_per_page'   =>-1,
@@ -34,7 +36,31 @@ class JSON_API_Cube_Controller{
 						}
 		endwhile;
 		return $user;
+	    wp_reset_postdata();
+
 	}
 
-
+	//get all users
+	public function get_users_byid(){
+		global $json_api;
+		$id=$json_api->query->id;
+		
+		$user=array();
+		
+		//$post=get_post($id);
+		
+				$userfild=simple_fields_values("participantPhone, participantImage, participantName",$id);
+						foreach($userfild as $userfild){
+							$name= $userfild['participantName'];
+							$phone= $userfild['participantPhone'];
+							$img= $userfild['participantImage']['url'];
+							
+							$user['user'][$cunter]['name']=$name;
+							$user['user'][$cunter]['phone']=$phone;
+							$user['user'][$cunter]['img']=$img;
+							
+							$cunter++;				
+						}
+		return $user;
+	}
 }

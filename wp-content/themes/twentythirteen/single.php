@@ -59,6 +59,31 @@ get_header(); ?>
 			
 		endwhile;
 		echo print_r($user,1);
+		wp_reset_postdata();
+			?>
+            <?php   
+  //         $post=get_post(119);
+		
+//		while($post->have_posts()):$post->the_post();
+				$userfild=simple_fields_values("participantPhone, participantImage, participantName",119);
+						foreach($userfild as $userfild){
+							$name= $userfild['participantName'];
+							$phone= $userfild['participantPhone'];
+							$img= $userfild['participantImage']['url'];
+							
+							$user['user'.$cunter][$cunter]['name']=$name;
+							$user['user'.$cunter][$cunter]['phone']=$phone;
+							$user['user'.$cunter][$cunter]['img']=$img;
+							
+							$cunter++;				
+						}
+		
+			
+			
+			
+			
+//		endwhile;
+		echo print_r($user,1);
 			?>
 		</div><!-- #content -->
 	</div><!-- #primary -->
