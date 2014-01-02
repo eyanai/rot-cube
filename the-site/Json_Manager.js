@@ -1,9 +1,9 @@
-﻿var missions = {};
-var allUsers={};
+﻿var allUsers={};
 
-function JsonMan() {
 
-    this.domain = "http://localhost/rot-cube/?json=";
+function JsonManager() {
+
+    this.domain = "http://localhost/rot-cube/";
 
     this.sendAjax = function (to_url, func) {
 
@@ -25,20 +25,20 @@ function JsonMan() {
 
 
     this.get_activity_day = function (id, func) {
-        var to_url = this.domain + "get_post&post_id=" + id + "&post_type=activity-day";
+        var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=activity-day";
         //&custom_fields=" + this.custom_fields_recipes;
 
         this.sendAjax(to_url, func);
     }
 
     this.get_mission = function (id, func) {
-        var to_url = this.domain + "get_post&post_id=" + id + "&post_type=activity-day,navigation-mission,take-photo-mission,capturevideo-mission,watch-video-mission,write-mission,quiz-mission,medicine-mission";
+        var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=activity-day,navigation-mission,take-photo-mission,capturevideo-mission,watch-video-mission,write-mission,quiz-mission,medicine-mission";
 
         this.sendAjax(to_url, func);
     }
 
-     this.get_question = function (id, func) {
-        var to_url = this.domain + "get_post&post_id=" + id + "&post_type=question";
+    this.get_question = function (id, func) {
+        var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=question";
 
         this.sendAjax(to_url, func);
 
@@ -46,12 +46,20 @@ function JsonMan() {
 	
 	
 	this.getUsers=function(func){
-		var to_url=this.domain + "get_recent_posts&post_type=user&order=ASC";
+		var to_url=this.domain + "api/cube/get_users/";
 		this.sendAjax(to_url,func);
 		
 	}//get users
 	
-} //JsonMan()
+ //JsonMan()
+
+    this.get_group = function (id, func) {
+        var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=group";
+
+        this.sendAjax(to_url, func);
+
+    }
+} //JsonManager()
 
 
 function JsonHandler() {
@@ -59,23 +67,23 @@ function JsonHandler() {
     var self = this;
     self.saver;
     self.missionCounter = 0;
+    self.questionCounter = 0;
     self.question;
-	
+    var nextMission = 0;
+    var missionsPostId = [];
 
-    this.get_activity_day_handler = function (json) {
-        var b = [];
-        var saver = json;
-        a = saver.post.custom_fields.missions[0].split('"')
-        for (i = 1; i < a.length; i += 2) {
-            b.push(a[i]);
-            jsonManager.get_mission(a[i], jsonHandler.get_mission_handler);
+    this.get_activity_day_handler = function (missionsStr) {
+
+        var tempArr = missionsStr.post.custom_fields.missions[0].split('"')
+        for (i = 1; i < tempArr.length; i += 2) {
+            missionsPostId.push(tempArr[i]);
         }
-        console.log(b);
+        console.log(missionsPostId);
+        jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
 
     }
 
     this.get_mission_handler = function (mission) {
-        console.log(mission);
 
         self.missionCounter++;
         var missionId = 'mission' + self.missionCounter;
@@ -91,7 +99,7 @@ function JsonHandler() {
 
         switch (mission.post.type) {
             case "take-photo-mission":
-                missions[missionId].numOfPhotosRequired = 5;//change+++++++++++++++++++++++++++++++++++
+                missions[missionId].numOfPhotosRequired = mission.post.custom_fields["wpcf-numofphotosrequired"][0];
                 break;
 
             case "navigation-mission":
@@ -103,33 +111,36 @@ function JsonHandler() {
                 missions[missionId].medicine[0] = {};
                 missions[missionId].medicine[1] = {};
                 missions[missionId].medicine[2] = {};
-                
+
                 missions[missionId].medicine[0].name = mission.post.custom_fields["wpcf-better-medicine-name"][0];
                 missions[missionId].medicine[0].description = mission.post.custom_fields["wpcf-better-medicine-description"][0];
                 missions[missionId].medicine[0].audience = mission.post.custom_fields["wpcf-better-medicine-audience"][0];
 
-                missions[missionId].medicine[1].name = mission.post.custom_fields["wpcf-prevent-medicine-name"][0];;
+                missions[missionId].medicine[1].name = mission.post.custom_fields["wpcf-prevent-medicine-name"][0]; ;
                 missions[missionId].medicine[1].description = mission.post.custom_fields["wpcf-prevent-medicine-description"][0];
                 missions[missionId].medicine[1].audience = mission.post.custom_fields["wpcf-prevent-medicine-audience"][0];
 
-                missions[missionId].medicine[2].name = mission.post.custom_fields["wpcf-saver-medicine-name"][0];;
+                missions[missionId].medicine[2].name = mission.post.custom_fields["wpcf-saver-medicine-name"][0]; ;
                 missions[missionId].medicine[2].description = mission.post.custom_fields["wpcf-saver-medicine-description"][0];
                 missions[missionId].medicine[2].audience = mission.post.custom_fields["wpcf-saver-medicine-audience"][0];
                 break;
 
             case "quiz-mission":
+                questions = [];
+                self.questionCounter = 0;
                 var b = [];
                 a = mission.post.custom_fields.questions[0].split('"')
                 for (i = 1; i < a.length; i += 2) {
                     b.push(a[i]);
                     jsonManager.get_question(a[i], self.get_question_handler); //jsonHandler.get_question
                 }
-                console.log(b);
 
+                missions[missionId].quiz = questions;
+              
                 break;
 
             case "write-text":
-
+                //currently there is nothing to add here
                 break;
 
             case "read-text":
@@ -137,7 +148,7 @@ function JsonHandler() {
                 break;
 
             case "watch-video":
-
+                //צריך להחליט אם לוקחים לינק או סרטון
                 break;
 
             case "capture-video":
@@ -145,16 +156,37 @@ function JsonHandler() {
                 break;
         }
 
+        //ajax call next mission
+        if (missionsPostId[++nextMission] !== undefined) {
+            jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
+        }
+        else
+        { console.log(missions); }
+
+
     }
 
     this.get_question_handler = function (question) {
-        console.log("GOOD QUESTIOn");
-        console.log(question);
+        questions[self.questionCounter] = [];
+        questions[self.questionCounter][0] = question.post.custom_fields["wpcf-question"][0];
+        questions[self.questionCounter][1] = question.post.custom_fields["wpcf-answer-1"][0];
+        questions[self.questionCounter][2] = question.post.custom_fields["wpcf-answer-2"][0];
+        questions[self.questionCounter][3] = question.post.custom_fields["wpcf-answer-3"][0];
+        questions[self.questionCounter][4] = question.post.custom_fields["wpcf-answer-4"][0];
+        questions[self.questionCounter][5] = parseInt(question.post.custom_fields["wpcf-right-answer"][0]);
+        self.questionCounter++;
+    }
 
+    this.get_group_handler = function (group) {
+        console.log(group);
+        //questions[self.questionCounter] = [];
+        //questions[self.questionCounter][0] = question.post.custom_fields["wpcf-question"][0];
+
+        //self.questionCounter++;
     }
 	
-	this.setAllUsers=function(user){
-		allcount=user.count;
+	this.setAllUsers=function(users){
+		allcount=users.user.length;
 	
 	//	  missions[missionId] = {};
      //   missions[missionId].id = missionId;
@@ -167,22 +199,25 @@ function JsonHandler() {
 		for(var i=0;i<allcount;i++){
 			allUsers['member'+i]={};
 			allUsers['member'+i].id='user'+i;
-			allUsers['member'+i].name=user.posts[i].title;
-			allUsers['member'+i].phone=user.posts[i].excerpt;
-			allUsers['member'+i].picture=user.posts[i].thumbnail;
+			allUsers['member'+i].name=users.user[i].name;
+			allUsers['member'+i].phone=users.user[i].phone;
+			allUsers['member'+i].picture=users.user[i].img;
 		}
 		
-		console.log(user);
+//		console.log(users);
 		console.log(allUsers);
 		
 	}
 } //JsonHandler()
 
-var jsonManager = new JsonMan();
+var jsonManager = new JsonManager();
 
 var jsonHandler = new JsonHandler();
 
+var missions = {};
+var questions = [];
 jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
+jsonManager.get_group(119, jsonHandler.get_group_handler);
 
 jsonManager.getUsers(jsonHandler.setAllUsers);
 //איך לדאוג שיעבור לפי הסדר?
@@ -190,8 +225,19 @@ jsonManager.getUsers(jsonHandler.setAllUsers);
 //get missions
 //get active activity day
 
+
+
+
+
+
 //להזיז את ימי פעילות למעלה
-//להעלים את השדות הקבועים
+
 //לשקול להוציא את HELPTEXT מהמערך
 //לבדוק הקרנת סרטון לפי לינק מיוטיוב
 //מה נעשה עם העלאת סרטון? 3MB זה גדול מדי
+//מה נעשה אם משימה נכשלה?
+//להפוך לPHP
+//לשנות את הסוג משימה ללא בחירה
+//להוסיף צ'ק בוקס לבונוס בכללי
+//להוסיף צבע למשימת צילום
+//לעשות בדיקה לוידאו מיו טיוב
