@@ -1,4 +1,5 @@
 ﻿var missions = {};
+var allUsers={};
 
 function JsonMan() {
 
@@ -42,6 +43,14 @@ function JsonMan() {
         this.sendAjax(to_url, func);
 
     }
+	
+	
+	this.getUsers=function(func){
+		var to_url=this.domain + "get_recent_posts&post_type=user&order=ASC";
+		this.sendAjax(to_url,func);
+		
+	}//get users
+	
 } //JsonMan()
 
 
@@ -51,6 +60,7 @@ function JsonHandler() {
     self.saver;
     self.missionCounter = 0;
     self.question;
+	
 
     this.get_activity_day_handler = function (json) {
         var b = [];
@@ -142,6 +152,30 @@ function JsonHandler() {
         console.log(question);
 
     }
+	
+	this.setAllUsers=function(user){
+		allcount=user.count;
+	
+	//	  missions[missionId] = {};
+     //   missions[missionId].id = missionId;
+      //  missions[missionId].type = mission.post.custom_fields["wpcf-type"][0];
+      
+	//	 var allUsers = {id:'',name:'',picture:'',};
+		// allUsers[0].name=user.posts[0].title;
+		// allUsers[0].picture=user.posts[0].title;
+		// allUsers[0].phone=user.posts[0].title;
+		for(var i=0;i<allcount;i++){
+			allUsers['member'+i]={};
+			allUsers['member'+i].id='user'+i;
+			allUsers['member'+i].name=user.posts[i].title;
+			allUsers['member'+i].phone=user.posts[i].excerpt;
+			allUsers['member'+i].picture=user.posts[i].thumbnail;
+		}
+		
+		console.log(user);
+		console.log(allUsers);
+		
+	}
 } //JsonHandler()
 
 var jsonManager = new JsonMan();
@@ -150,6 +184,7 @@ var jsonHandler = new JsonHandler();
 
 jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
 
+jsonManager.getUsers(jsonHandler.setAllUsers);
 //איך לדאוג שיעבור לפי הסדר?
 //get activity day
 //get missions
