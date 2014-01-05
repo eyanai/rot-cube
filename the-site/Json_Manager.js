@@ -32,17 +32,16 @@ function JsonManager() {
 	}
 
 
-    this.get_activity_day = function (id, func) {
+/*    this.get_activity_day = function (id, func) {
         var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=activity-day";
         //&custom_fields=" + this.custom_fields_recipes;
 
         this.sendAjax(to_url, func);
-    }
+    }*/
 
     this.get_mission = function (id, func) {
-        var to_url = this.domain + "?json=get_post&post_id=" + id + "&post_type=activity-day,navigation-mission,take-photo-mission,capturevideo-mission,watch-video-mission,write-mission,quiz-mission,medicine-mission";
-
-        this.sendAjax(to_url, func);
+        var to_url = this.domain + "api/cube/get_mission_date/?id="+id+"";
+	    this.sendAjax(to_url, func);
     }
 
     this.get_question = function (id, func) {
@@ -96,89 +95,92 @@ function JsonHandler() {
             missionsPostId.push(tempArr[i]);
         }
         console.log(missionsPostId);
-        jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
+       // jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
 
     }
 
-    this.get_mission_handler = function (mission) {
-
-        self.missionCounter++;
-        var missionId = 'mission' + self.missionCounter;
-        missions[missionId] = {};
-        missions[missionId].id = missionId;
-        missions[missionId].type = mission.post.custom_fields["wpcf-type"][0];
-        missions[missionId].description = mission.post.custom_fields["wpcf-description"][0];
-        missions[missionId].timer = parseInt(mission.post.custom_fields["wpcf-estimated-time"][0]);
-        missions[missionId].points = parseInt(mission.post.custom_fields["wpcf-scoring"][0]);
-        if (mission.post.custom_fields["wpcf-feelings"][0] !== "") {
-            missions[missionId].feelings = mission.post.custom_fields["wpcf-feelings"][0];
-        }
-
-        switch (mission.post.type) {
-            case "take-photo-mission":
-                missions[missionId].numOfPhotosRequired = mission.post.custom_fields["wpcf-numofphotosrequired"][0];
-                break;
-
-            case "navigation-mission":
-                missions[missionId].destination = [parseFloat(mission.post.custom_fields["wpcf-latitude"][0]), parseFloat(mission.post.custom_fields["wpcf-longitude"][0])];
-                break;
-
-            case "medicine-mission":
-                missions[missionId].medicine = [];
-                missions[missionId].medicine[0] = {};
-                missions[missionId].medicine[1] = {};
-                missions[missionId].medicine[2] = {};
-
-                missions[missionId].medicine[0].name = mission.post.custom_fields["wpcf-better-medicine-name"][0];
-                missions[missionId].medicine[0].description = mission.post.custom_fields["wpcf-better-medicine-description"][0];
-                missions[missionId].medicine[0].audience = mission.post.custom_fields["wpcf-better-medicine-audience"][0];
-
-                missions[missionId].medicine[1].name = mission.post.custom_fields["wpcf-prevent-medicine-name"][0]; ;
-                missions[missionId].medicine[1].description = mission.post.custom_fields["wpcf-prevent-medicine-description"][0];
-                missions[missionId].medicine[1].audience = mission.post.custom_fields["wpcf-prevent-medicine-audience"][0];
-
-                missions[missionId].medicine[2].name = mission.post.custom_fields["wpcf-saver-medicine-name"][0]; ;
-                missions[missionId].medicine[2].description = mission.post.custom_fields["wpcf-saver-medicine-description"][0];
-                missions[missionId].medicine[2].audience = mission.post.custom_fields["wpcf-saver-medicine-audience"][0];
-                break;
-
-            case "quiz-mission":
-                questions = [];
-                self.questionCounter = 0;
-                var b = [];
-                a = mission.post.custom_fields.questions[0].split('"')
-                for (i = 1; i < a.length; i += 2) {
-                    b.push(a[i]);
-                    jsonManager.get_question(a[i], self.get_question_handler); //jsonHandler.get_question
-                }
-
-                missions[missionId].quiz = questions;
-              
-                break;
-
-            case "write-text":
-                //currently there is nothing to add here
-                break;
-
-            case "read-text":
-
-                break;
-
-            case "watch-video":
-                //צריך להחליט אם לוקחים לינק או סרטון
-                break;
-
-            case "capture-video":
-
-                break;
-        }
-
+  this.get_mission_handler = function (mission) {
+		missions = {};
+		
+        for(self.missionCounter=0;self.missionCounter<mission.long;self.missionCounter++){
+			
+			var missionId = 'mission' + self.missionCounter;
+			missions[missionId] = {};
+			missions[missionId].id = missionId;
+			missions[missionId].type = mission[self.missionCounter]['wpcf-type'][0];
+			missions[missionId].description = mission[self.missionCounter]["wpcf-description"][0];
+			missions[missionId].timer = parseInt(mission[self.missionCounter]["wpcf-estimated-time"][0]);
+			missions[missionId].points = parseInt(mission[self.missionCounter]["wpcf-scoring"][0]);
+			if (mission[self.missionCounter]["wpcf-feelings"][0] !== "") {
+				missions[missionId].feelings =mission[self.missionCounter]["wpcf-feelings"][0];
+			}
+	
+			switch (mission[self.missionCounter]['wpcf-type'][0]) {
+				case "take-photo":
+					missions[missionId].numOfPhotosRequired = mission[self.missionCounter]["wpcf-numofphotosrequired"][0];
+					break;
+	
+				case "navigate":
+					missions[missionId].destination = [parseFloat(mission[self.missionCounter]["wpcf-latitude"][0]),
+													   parseFloat(mission[self.missionCounter]["wpcf-longitude"][0])];
+					break;
+	
+				case "medicine-basket":
+					missions[missionId].medicine = [];
+					missions[missionId].medicine[0] = {};
+					missions[missionId].medicine[1] = {};
+					missions[missionId].medicine[2] = {};
+	
+					missions[missionId].medicine[0].name = mission[self.missionCounter]["wpcf-better-medicine-name"][0];
+					missions[missionId].medicine[0].description =mission[self.missionCounter]["wpcf-better-medicine-description"][0];
+					missions[missionId].medicine[0].audience = mission[self.missionCounter]["wpcf-better-medicine-audience"][0];
+	
+					missions[missionId].medicine[1].name = mission[self.missionCounter]["wpcf-prevent-medicine-name"][0]; ;
+					missions[missionId].medicine[1].description = mission[self.missionCounter]["wpcf-prevent-medicine-description"][0];
+					missions[missionId].medicine[1].audience = mission[self.missionCounter]["wpcf-prevent-medicine-audience"][0];
+	
+					missions[missionId].medicine[2].name = mission[self.missionCounter]["wpcf-saver-medicine-name"][0]; ;
+					missions[missionId].medicine[2].description = mission[self.missionCounter]["wpcf-saver-medicine-description"][0];
+					missions[missionId].medicine[2].audience = mission[self.missionCounter]["wpcf-saver-medicine-audience"][0];
+					break;
+	
+				case "quiz":
+					questions = [];
+					self.questionCounter = 0;
+					var b = [];
+					a = mission[self.missionCounter]['questions'][0].split('"')
+					for (i = 1; i < a.length; i += 2) {
+						b.push(a[i]);
+						jsonManager.get_question(a[i], self.get_question_handler); //jsonHandler.get_question
+					}
+	
+					missions[missionId].quiz = questions;
+				  
+					break;
+	
+				case "write-text":
+					//currently there is nothing to add here
+					break;
+	
+				case "read-text":
+	
+					break;
+	
+				case "watch-video":
+					//צריך להחליט אם לוקחים לינק או סרטון
+					break;
+	
+				case "capture-video":
+	
+					break;
+			}
+		}
         //ajax call next mission
-        if (missionsPostId[++nextMission] !== undefined) {
+       /* if (missionsPostId[++nextMission] !== undefined) {
             jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
         }
-        else
-        { console.log(missions); }
+        else*/
+       console.log(missions); 
 
 
     }
@@ -203,27 +205,28 @@ function JsonHandler() {
     }
 	
 	this.setAllUsers=function(users){
-		allcount=users.user.length;
-		/*for(var i=0;i<allcount;i++){
-			allUsers['member'+i]={};
-			allUsers['member'+i].id='user'+i;
-			allUsers['member'+i].name=users.user[i].name;
-			allUsers['member'+i].phone=users.user[i].phone;
-			allUsers['member'+i].picture=users.user[i].img;
-		}*/
-		
-		for (x in users.user)
-			  {
-				allUsers['member'+x]={};  
-				allUsers['member'+x].id='user'+x;
-				allUsers['member'+x].name=users.user[x].name;
-				allUsers['member'+x].phone=users.user[x].phone;
-				allUsers['member'+x].picture=users.user[x].img;
-			 // console.log(users.user[x].name);
-			  }
-		
-		console.log(allUsers);
-		
+		if(users.user){	
+			allcount=users.user.length;
+			/*for(var i=0;i<allcount;i++){
+				allUsers['member'+i]={};
+				allUsers['member'+i].id='user'+i;
+				allUsers['member'+i].name=users.user[i].name;
+				allUsers['member'+i].phone=users.user[i].phone;
+				allUsers['member'+i].picture=users.user[i].img;
+			}*/
+			
+			for (x in users.user)
+				  {
+					allUsers['member'+x]={};  
+					allUsers['member'+x].id='user'+x;
+					allUsers['member'+x].name=users.user[x].name;
+					allUsers['member'+x].phone=users.user[x].phone;
+					allUsers['member'+x].picture=users.user[x].img;
+				 // console.log(users.user[x].name);
+				  }
+			
+			console.log(allUsers);
+		}
 	}
 	
 	this.returnDays=function(days){
@@ -271,7 +274,7 @@ var questions = [];
 //get active activity day
 
 
-
+//JsonManager.get_mission(49,JsonHandler.get_mission_handler);
 
 
 

@@ -63,4 +63,29 @@ class JSON_API_Cube_Controller{
 						}
 		return $user;
 	}
+	
+	
+	//get all mission
+	public function get_mission_date(){
+		   global $json_api,$post;
+		   $id=$json_api->query->id;	
+			
+	       $post=get_post($id);
+		   $cunter=0;
+		   
+		   $mission=array();
+			//return array('id'=>$id);
+		
+			$posts = get_field('missions');
+			if( $posts ):
+				 foreach( $posts as $post_object):
+						$custom_fields=get_post_custom($post_object->ID);
+						array_push($mission,$custom_fields); 
+						$cunter++;
+				endforeach;
+				$mission['long']=$cunter;
+				return $mission; 
+			endif;
+
+	}
 }
