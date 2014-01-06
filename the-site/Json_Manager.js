@@ -1,5 +1,5 @@
 ﻿var allUsers = {};
-var gday = {};
+
 var allgrup = {};
 
 
@@ -104,7 +104,7 @@ function JsonHandler() {
 
         for (self.missionCounter = 0; self.missionCounter < mission.long; self.missionCounter++) {
 
-            var missionId = 'mission' + self.missionCounter;
+            var missionId = 'mission' + (self.missionCounter + 1);
             missions[missionId] = {};
             missions[missionId].id = missionId;
             missions[missionId].type = mission[self.missionCounter]['wpcf-type'][0];
@@ -114,11 +114,13 @@ function JsonHandler() {
             if (mission[self.missionCounter]["wpcf-feelings"][0] !== "") {
                 missions[missionId].feelings = mission[self.missionCounter]["wpcf-feelings"][0];
             }
+            //if (parseInt(mission[self.missionCounter]["wpcf-isbonus"][0])) {
+            //    missions[missionId].bonus = true;
+            //}
 
             switch (mission[self.missionCounter]['wpcf-type'][0]) {
                 case "take-photo":
                     missions[missionId].numOfPhotosRequired = mission[self.missionCounter]["wpcf-numofphotosrequired"][0];
-                    missions[missionId].color = mission.post.custom_fields["wpcf-photo-mission-color"][0];
                     break;
 
                 case "navigate":
@@ -175,29 +177,29 @@ function JsonHandler() {
 
                     break;
             }
-
-            //ajax call next mission
-            /* if (missionsPostId[++nextMission] !== undefined) {
-            jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
-            }
-            else*/
-            console.log(missions);
-
-            $('#welcome-poster').on('click', function () {
-                $(this).hide();
-                $('section#register-group').show();
-                $('#main-score').show();
-                $('#main-help').show();
-
-                //set the help popup
-                fixedInfoController.setHelpPopupText("register");
-            });
-
-            navigationController.missions = missions;
-            menuController.initMissions();
-
-
         }
+        //ajax call next mission
+        /* if (missionsPostId[++nextMission] !== undefined) {
+        jsonManager.get_mission(missionsPostId[nextMission], jsonHandler.get_mission_handler);
+        }
+        else*/
+        console.log(missions);
+
+        ///////temp until database///////////////////
+        $("#welcome-poster").css("background-image", "url(./img/Welcome1.png)");
+        $('#welcome-poster').on('click', function () {
+            $(this).hide();
+            $('section#register-group').show();
+            $('#main-score').show();
+            $('#main-help').show();
+
+            //set the help popup
+            fixedInfoController.setHelpPopupText("register");
+
+        });
+
+        navigationController.missions = missions;
+        menuController.initMissions();
 
 
     }
@@ -242,19 +244,25 @@ function JsonHandler() {
             }
 
             console.log(allUsers);
+            registerController.allUsers = allUsers;
+            registerController.displayAllUsers();
         }
     }
 
     this.returnDays = function (days) {
+        var allDays = {};
         allcount = days.count;
         for (var i = 0; i < allcount; i++) {
-            gday['day' + i] = {};
-            gday['day' + i].id = days.posts[i].id;
-            gday['day' + i].title = days.posts[i].title;
+            allDays['day' + i] = {};
+            allDays['day' + i].id = days.posts[i].id;
+            allDays['day' + i].title = days.posts[i].title;
         }
-        gday.long = allcount;
-        self.allDays = gday;
+        allDays.long = allcount;
+        self.allDays = allDays;
         //	console.log(days);
+        setDays(daychange);
+
+
     }
 
 
@@ -269,7 +277,7 @@ function JsonHandler() {
         allgrup.long = allcount;
         self.allGroup = allgrup;
         //console.log(self.allGroup);
-
+        setUser(selectgroup);
     }
 } //JsonHandler()
 
@@ -282,9 +290,8 @@ var questions = [];
 //jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
 //jsonManager.get_group(119, jsonHandler.get_group_handler);
 
-//jsonManager.getAlldays(jsonHandler.returnDays);
-//jsonManager.getUsers(jsonHandler.setAllUsers);
-
+jsonManager.getAlldays(jsonHandler.returnDays);
+jsonManager.getAllGroup(jsonHandler.returnGroup);
 
 //JsonManager.get_mission(49,JsonHandler.get_mission_handler);
 
@@ -293,14 +300,11 @@ var questions = [];
 //להזיז את ימי פעילות למעלה
 
 //לשקול להוציא את HELPTEXT מהמערך
-//לבדוק הקרנת סרטון לפי לינק מיוטיוב
 //מה נעשה עם העלאת סרטון? 3MB זה גדול מדי
-
+//מה נעשה אם משימה נכשלה?
 //להפוך לPHP
 //לשנות את הסוג משימה ללא בחירה
 //להוסיף צ'ק בוקס לבונוס בכללי
 //להוסיף צבע למשימת צילום
-
 //לעשות בדיקה לוידאו מיו טיוב
-
-//מנגנון אל כשל לקריאות AJAX
+//if only one group and one day publish- skip settings
