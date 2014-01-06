@@ -2,13 +2,17 @@
 # This file is distributed under the same license as the Twenty Thirteen package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-09-12 11:44:16+0000\n"
+"PO-Revision-Date: 2013-12-04 11:55:09+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: GlotPress/0.1\n"
 "Project-Id-Version: Twenty Thirteen\n"
+
+#: 404.php:16
+msgid "Not Found"
+msgstr "לא נמצא"
 
 msgid "The 2013 theme for WordPress takes us back to the blog, featuring a full range of post formats, each displayed beautifully in their own unique way. Design details abound, starting with a vibrant color scheme and matching header images, beautiful typography and icons, and a flexible layout that looks great on any device, big or small."
 msgstr "ערכת הנושא 2013 מחזירה אותנו אל הבסיס של מערכת WordPress - אל הבלוג. ערכת הנושא מציעה מגוון רחב של פורמטים (Post Format), כאשר כל אחד מהפורמטים מוצג בדרך שונה וייחודית, אפשרות לשנות את תמונת הכותרת של האתר, ערכת צבעים תוססת ומלאת חיים, טיפוגרפיה ייחודית ואייקונים יפים. ערכת הנושא 2013 הינה תבנית מגיבה (רספונסיבית) שנראית נהדר בכל מכשיר קצה."
@@ -42,11 +46,7 @@ msgstr "רוחב מסך מלא"
 
 #: inc/back-compat.php:41 inc/back-compat.php:53 inc/back-compat.php:68
 msgid "Twenty Thirteen requires at least WordPress version 3.6. You are running version %s. Please upgrade and try again."
-msgstr "דרישת המינימום להפעלת ערכת העיצוב Twenty Thirteen היא וורדפרס בגרסה 3.6. האתר שלך רץ על וורדפרס בגרסה %s. אנא שדרג את גרסת וורדפרס ונסה שוב."
-
-#: 404.php:16
-msgid "Not found"
-msgstr "לא נמצא"
+msgstr "דרישת המינימום להפעלת ערכת העיצוב Twenty Thirteen היא וורדפרס בגרסה 3.6. האתר מפעיל וורדפרס בגרסה %s. יש לשדרג את גרסת וורדפרס ולנסות שנית."
 
 #: 404.php:21
 msgid "This is somewhat embarrassing, isn&rsquo;t it?"
