@@ -1,20 +1,24 @@
 // JavaScript Document
 $(document).ready(function (e) {
+    jsonManager.getAlldays(jsonHandler.returnDays);
+    jsonManager.getAllGroup(jsonHandler.returnGroup);
+
+
     $("#admin-settings button").on('click', getDayAndGroupData);
 });
 
-function setUser(func) {
+function setUser() {//func
     html = ' <option value="">בחר קבוצה</option>';
     for (var i = 0; i < jsonHandler.allGroup.long; i++) {
         html += ' <option value="' + jsonHandler.allGroup[i].id + '">' + jsonHandler.allGroup[i].title + '</option>';
     }
     $("#groupSelect").html(html);
 
-   // func();
+    // func();
 }
 
-function setDays(func) {
-   // jsonManager.getAlldays(jsonHandler.returnDays);
+function setDays() {//func
+    // jsonManager.getAlldays(jsonHandler.returnDays);
     var daylist = jsonManager.allDays;
 
     html = ' <option value="">בחר יום</option>';
@@ -22,7 +26,7 @@ function setDays(func) {
         html += ' <option value="' + jsonHandler.allDays['day' + i].id + '">' + jsonHandler.allDays['day' + i].title + '</option>';
     }
     $("#dayselect").html(html);
-   // func();
+    // func();
 }
 
 function getDayAndGroupData() {
@@ -30,25 +34,25 @@ function getDayAndGroupData() {
     sid = $("#dayselect option:selected").val();
     jsonManager.get_mission(sid, jsonHandler.get_mission_handler);
 
-     sid = $("#groupSelect option:selected").val();
-     jsonManager.getUsersById(sid, jsonHandler.setAllUsers);
+    sid = $("#groupSelect option:selected").val();
+    jsonManager.getUsersById(sid, jsonHandler.setAllUsers);
 
     $("#welcome-poster").css("background-image", "url(./img/loading.jpg)").show();
 }
 
-//function daychange() {
-//    //$("#dayselect").on('change', this, function () {
-//    //    sid = $("#dayselect option:selected").val();
+function daychange() {
+    //    //$("#dayselect").on('change', this, function () {
+    //    //    sid = $("#dayselect option:selected").val();
 
-//    //    jsonManager.get_mission(sid, jsonHandler.get_mission_handler);
-//    //});
+    //    //    jsonManager.get_mission(sid, jsonHandler.get_mission_handler);
+    //    //});
 
-//}
+}
 
 
-//function selectgroup() {
-//    //$("#groupSelect").on('change', this, function () {
-//    //    sid = $("#groupSelect option:selected").val();
-//    //    jsonManager.getUsersById(sid, jsonHandler.setAllUsers);
-//    //});
-//}
+function selectgroup() {
+    //    //$("#groupSelect").on('change', this, function () {
+    //    //    sid = $("#groupSelect option:selected").val();
+    //    //    jsonManager.getUsersById(sid, jsonHandler.setAllUsers);
+    //    //});
+}

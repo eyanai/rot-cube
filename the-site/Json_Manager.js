@@ -201,8 +201,8 @@ function JsonHandler() {
 
         });
 
-        navigationController.missions = missions;
-        menuController.initMissions();
+       // navigationController.missions = missions;
+      //  menuController.initMissions();
 
 
     }
@@ -238,8 +238,8 @@ function JsonHandler() {
             }
 
             console.log(allUsers);
-            registerController.allUsers = allUsers;
-            registerController.displayAllUsers();
+      //      registerController.allUsers = allUsers;
+        //    registerController.displayAllUsers();
         }
     }
 
@@ -254,7 +254,7 @@ function JsonHandler() {
         allDays.long = allcount;
         self.allDays = allDays;
         //	console.log(days);
-        setDays(daychange);
+        setDays();//daychange
 
 
     }
@@ -271,7 +271,7 @@ function JsonHandler() {
         allgrup.long = allcount;
         self.allGroup = allgrup;
         //console.log(self.allGroup);
-        setUser(selectgroup);
+        setUser();//selectgroup
     }
 } //JsonHandler()
 
@@ -284,8 +284,6 @@ var questions = [];
 //jsonManager.get_activity_day(18, jsonHandler.get_activity_day_handler);
 //jsonManager.get_group(119, jsonHandler.get_group_handler);
 
-jsonManager.getAlldays(jsonHandler.returnDays);
-jsonManager.getAllGroup(jsonHandler.returnGroup);
 
 //JsonManager.get_mission(49,JsonHandler.get_mission_handler);
 

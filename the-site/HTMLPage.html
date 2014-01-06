@@ -4,21 +4,24 @@
         <meta charset="utf-8" />
         <title>test json api</title>
         <script src="jquery.js"></script>
-        <script src="Json_Manager.js"></script>
         <script src="select.js"></script>
+        <script src="Json_Manager.js"></script>
+
         <!--<script src="json_set.js"></script>-->
     </head>
     <body>
-        <select name="dayselect" id="dayselect" title="בחר יום">
-            <option value="test">test</option>
+        <section id="admin-settings">
+            <select name="dayselect" id="dayselect" title="בחר יום">
+                <option value="test">test</option>
+            </select>
+            <select name="groupSelect" id="groupSelect" title="בחר קבוצה">
+                <option value="test">test</option>
+            </select>
 
-        </select>
-        <select name="groupSelect" id="groupSelect" title="בחר קבוצה">
+            <button id="set-activity-day">אישור</button>
 
-            <option value="test">test</option>
 
-        </select>
-
+        </section>
 
         <form action="" method="post" id="postest">
             <textarea id="text"></textarea>
