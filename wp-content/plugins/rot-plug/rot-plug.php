@@ -9,7 +9,7 @@ Author URI:
 License: GPLv2 or later
 */
 
-
+include ("setpost.php");
 
 ///json api extention
 // Add a custom controller

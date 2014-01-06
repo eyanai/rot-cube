@@ -101,7 +101,7 @@ function JsonHandler() {
 
   this.get_mission_handler = function (mission) {
 		missions = {};
-		
+		console.log(mission);
         for(self.missionCounter=0;self.missionCounter<mission.long;self.missionCounter++){
 			
 			var missionId = 'mission' + self.missionCounter;
@@ -145,15 +145,18 @@ function JsonHandler() {
 					break;
 	
 				case "quiz":
-					questions = [];
-					self.questionCounter = 0;
-					var b = [];
-					a = mission[self.missionCounter]['questions'][0].split('"')
-					for (i = 1; i < a.length; i += 2) {
-						b.push(a[i]);
-						jsonManager.get_question(a[i], self.get_question_handler); //jsonHandler.get_question
+				
+				allq=mission[self.missionCounter]['question']['q_sum'];
+					for (i = 0; i < allq; i++) {
+						questions[i] = [];
+						questions[i][0] = mission[self.missionCounter]['question']['q'+i];
+						questions[i][1] = mission[self.missionCounter]['question']['a1-'+i];
+						questions[i][2] = mission[self.missionCounter]['question']['a2-'+i];
+						questions[i][3] = mission[self.missionCounter]['question']['a3-'+i];
+						questions[i][4] = mission[self.missionCounter]['question']['a4-'+i];
+						questions[i][5] = mission[self.missionCounter]['question']['a-'+i];
+						
 					}
-	
 					missions[missionId].quiz = questions;
 				  
 					break;
@@ -185,16 +188,7 @@ function JsonHandler() {
 
     }
 
-    this.get_question_handler = function (question) {
-        questions[self.questionCounter] = [];
-        questions[self.questionCounter][0] = question.post.custom_fields["wpcf-question"][0];
-        questions[self.questionCounter][1] = question.post.custom_fields["wpcf-answer-1"][0];
-        questions[self.questionCounter][2] = question.post.custom_fields["wpcf-answer-2"][0];
-        questions[self.questionCounter][3] = question.post.custom_fields["wpcf-answer-3"][0];
-        questions[self.questionCounter][4] = question.post.custom_fields["wpcf-answer-4"][0];
-        questions[self.questionCounter][5] = parseInt(question.post.custom_fields["wpcf-right-answer"][0]);
-        self.questionCounter++;
-    }
+  
 
     this.get_group_handler = function (group) {
         console.log(group);
