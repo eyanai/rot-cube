@@ -64,6 +64,61 @@ class JSON_API_Cube_Controller{
 		return $user;
 	}
 	
+	//get all users
+	public function register_device(){
+		global $json_api;
+		$lat=$json_api->query->lat;
+		$lng=$json_api->query->lng;
+		
+		
+		$devide=array();
+		
+		$lat=isset($lat)?$lat:'';
+  		$lng=isset($lng)?$lng:'';
+ 
+		 //insert post
+			$my_post = array(
+			  'post_title'    => uniqid(),
+			  'post_type'     =>'device',
+			  'post_status'   => 'publish',
+			  'post_category' => array(8,39)
+			);
+	
+			// Insert the post into the database
+			$postid=wp_insert_post( $my_post );
+			 
+			 add_post_meta( $postid, 'lat',$lat );
+			 add_post_meta( $postid, 'lng', $lng );
+			
+			get_post($postid);
+			$title=get_the_title($postid);
+	
+			$devide['device']=$title;
+			$devide['id']=$postid;
+			return $devide;
+		}
+		
+	public function add_device_pram(){
+		global $json_api;
+		$id=$json_api->query->id;
+		$pram=$json_api->query->pram;
+		$value=$json_api->query->value;
+		
+		if(add_post_meta( $id, $pram,$value ))
+		return array('update'=>'ok');
+	
+	}
+	public function update_device_pram(){
+		global $json_api;
+		$id=$json_api->query->id;
+		$pram=$json_api->query->pram;
+		$value=$json_api->query->value;
+		
+		if(update_post_meta( $id, $pram,$value ))
+		return array('update'=>'ok');
+	
+	}	
+	
 	
 	//get all mission
 	public function get_mission_date(){
