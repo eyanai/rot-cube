@@ -101,7 +101,7 @@ function JsonHandler() {
 
   this.get_mission_handler = function (mission) {
 		missions = {};
-		console.log(mission);
+	//	console.log(mission);
         for(self.missionCounter=0;self.missionCounter<mission.long;self.missionCounter++){
 			
 			var missionId = 'mission' + self.missionCounter;
@@ -211,6 +211,7 @@ function JsonHandler() {
 			
 			for (x in users.user)
 				  {
+					 
 					allUsers['member'+x]={};  
 					allUsers['member'+x].id='user'+x;
 					allUsers['member'+x].name=users.user[x].name;

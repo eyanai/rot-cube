@@ -1,7 +1,7 @@
-function JsonManagerPost() {
+(function JsonManagerPost() {
 
     this.domain = "http://localhost/rot-cube/";
-	this.domain+="wp-content/plugins/rot-plug/setpost.php";
+	this.domain+="wp-admin/admin-ajax.php";
 
     this.sendAjaxPost = function (text) {
 
@@ -22,9 +22,11 @@ function JsonManagerPost() {
 		var to_url=this.domain + "?json=get_recent_posts&post_type=activity-day";
 		this.sendAjax(to_url,func);
 	}
-}
+	
+	return JsonManagerPost;
+})();
 
-var JsonPost=new JsonManagerPost();
+
 
 
 $(document).ready(function(e) {
@@ -45,5 +47,25 @@ $(document).ready(function(e) {
     
 		return false;
 	});
+	
+	
+	$('#register').on('click',this,function(){
+		text=$('#text').val();	
+ 	
+		$.post( 'http://localhost/rot-cube/wp-admin/admin-ajax.php',
+			{
+			
+		//	"lat":lat,
+		//	"lng":lng,
+			"action":'set_devices'	
+				},	
+			 function(data) {
+				 console.log(data);
+			  //alert( "success" );
+				}
+			 );
+    
+	});
+	
 	
 });
