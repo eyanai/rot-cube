@@ -50,21 +50,9 @@ $(document).ready(function(e) {
 	
 	
 	$('#register').on('click',this,function(){
-		text=$('#text').val();	
- 	
-		$.post( 'http://localhost/rot-cube/wp-admin/admin-ajax.php',
-			{
-			
-		//	"lat":lat,
-		//	"lng":lng,
-			"action":'set_devices'	
-				},	
-			 function(data) {
-				 console.log(data);
-			  //alert( "success" );
-				}
-			 );
-    
+		lat=15;
+		lng=75;
+		jsonManager.registerDevice(lat,lng,jsonHandler.getRegisterDevice);
 	});
 	
 	

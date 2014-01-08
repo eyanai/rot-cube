@@ -75,6 +75,11 @@ function JsonManager() {
         this.sendAjax(to_url, func);
 
     }
+	
+	this.registerDevice=function(lat,lng,func){
+		 var to_url = this.domain + "api/cube/register_device/?let="+lat+"&lng="+lng;
+        this.sendAjax(to_url, func);
+	}
 } //JsonManager()
 
 
@@ -273,6 +278,11 @@ function JsonHandler() {
         //console.log(self.allGroup);
         setUser();//selectgroup
     }
+	
+	
+	this.getRegisterDevice=function(device){
+		console.log(device);
+	}
 } //JsonHandler()
 
 var jsonManager = new JsonManager();

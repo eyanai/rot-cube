@@ -140,7 +140,7 @@ class JSON_API_Cube_Controller{
 			$device['lng']=get_post_meta($post->ID,'lng',true);
 			array_push($locations,$device);
 		endforeach;
-		$locations['long']=$i;	
+			$locations['long']=$i;	
 		return $locations;
 	}	
 	
