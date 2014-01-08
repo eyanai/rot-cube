@@ -141,7 +141,6 @@ class JSON_API_Cube_Controller{
 			array_push($locations,$device);
 		endforeach;
 		$locations['long']=$i;	
-		array_push($locations,$device);
 		return $locations;
 	}	
 	
