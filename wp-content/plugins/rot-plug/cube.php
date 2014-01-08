@@ -119,6 +119,32 @@ class JSON_API_Cube_Controller{
 	
 	}	
 	
+	public function get_device_loc(){
+		$i=0;
+		
+		$args = array(
+		'posts_per_page'   => -1,
+		'orderby'          => 'post_date',
+		'order'            => 'DESC',
+		'post_type'        => 'device',
+		'post_status'      => 'publish',
+		'suppress_filters' => true ); 
+		
+		$myposts = get_posts( $args );
+		$device=array();
+		$locations=array();
+		foreach ( $myposts as $post ) : setup_postdata( $post );
+			$i++;
+			$device['device']=get_the_title($post->ID);
+			$device['lat']=get_post_meta($post->ID,'lat',true);
+			$device['lng']=get_post_meta($post->ID,'lng',true);
+			array_push($locations,$device);
+		endforeach;
+		$locations['long']=$i;	
+		array_push($locations,$device);
+		return $locations;
+	}	
+	
 	
 	//get all mission
 	public function get_mission_date(){
@@ -167,4 +193,4 @@ class JSON_API_Cube_Controller{
 			endif;
 
 	}
-}
+}//class JSON_API_Cube_Controller
