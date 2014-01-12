@@ -108,6 +108,17 @@ class JSON_API_Cube_Controller{
 		return array('update'=>'ok');
 	
 	}
+	
+	public function del_device(){
+		global $json_api;
+		$id=$json_api->query->id;
+		
+		if(wp_delete_post($id))
+		return array('del'=>'ok');
+	
+	}
+	
+	
 	public function update_device_pram(){
 		global $json_api;
 		$id=$json_api->query->id;
